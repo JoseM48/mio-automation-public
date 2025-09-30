@@ -1,0 +1,70 @@
+name: Publish sanitized mirror
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout private repo
+        uses: actions/checkout@v4
+
+      - name: Build sanitized snapshot (from mirror-include.txt)
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf mirror && mkdir -p mirror
+
+          # Validar que exista el archivo de lista blanca
+          if [ ! -f "mirror-include.txt" ]; then
+            echo "ERROR: mirror-include.txt no existe en la raíz del repo."
+            exit 1
+          fi
+
+          # Copiar SOLO lo listado (ignora líneas vacías y comentarios que empiecen con #)
+          while IFS= read -r path || [ -n "$path" ]; do
+            # saltar vacías o comentarios
+            [[ -z "${path// }" ]] && continue
+            [[ "$path" =~ ^[[:space:]]*# ]] && continue
+
+            if [ -e "$path" ]; then
+              # rsync preserva estructura de carpetas; copia archivos o directorios
+              rsync -av --prune-empty-dirs "$path" mirror/
+            else
+              echo "Aviso: '$path' no existe; se omite."
+            fi
+          done < mirror-include.txt
+
+          # Chequeo básico para evitar subir secretos por error
+          ! grep -R -E -i "(api[_-]?(key|token)|bearer|Authorization:|secret|password)" mirror/ \
+            || { echo "Posible secreto encontrado en el snapshot. Abortando."; exit 1; }
+
+      - name: Build public README
+        shell: bash
+        run: |
+          cat > mirror/README.md <<'EOF'
+          # Mio Automation (Public Snapshot)
+          Este mirror se construye desde `mirror-include.txt` y se actualiza en cada push.
+          Contiene solo archivos no sensibles para entender la arquitectura y aplicar parches.
+          EOF
+
+      - name: Push to public repo (mirror branch name)
+        env:
+          GH_TOKEN: ${{ secrets.PUBLIC_REPO_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd mirror
+          git init
+          git config user.name "automation-bot"
+          git config user.email "automation@example.com"
+          git add .
+          TS="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          git commit -m "chore: update public snapshot $TS"
+          SRC_BRANCH="${GITHUB_REF_NAME}"     # e.g., main o dev
+          git branch -M "$SRC_BRANCH"
+          git remote add origin "https://${GH_TOKEN}@github.com/JoseM48/mio-automation-public.git"
+          git push -f origin "$SRC_BRANCH"

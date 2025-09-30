@@ -1,0 +1,27 @@
+﻿# === Ignora entornos, caches y secretos ===
+node_modules/
+.env
+.env.*
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+
+# === Archivos sensibles / claves ===
+*.key
+*.pem
+*.pfx
+*.crt
+*.cer
+*.jks
+
+# === Archivos TXT con datos privados ===
+credenciales*.txt
+Datos*importantes*.txt
+CLAVE*PARA*RENDER*
+cert*del*3202882608*.txt
+
+# === Logs y temporales ===
+*.log
+*.tmp
+*.bak

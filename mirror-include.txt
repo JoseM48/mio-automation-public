@@ -1,0 +1,14 @@
+# Archivos/paths permitidos para el mirror público
+README.md
+index.js
+# worker opcional si existe en público:
+worker.js
+
+# Servicios (solo entrypoints, nada con claves)
+services/core-bot/index.js
+services/brain/index.js
+services/jobs/index.js
+services/jobs/worker.js
+
+# Documentación pública opcional
+docs/

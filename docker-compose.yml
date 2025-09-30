@@ -1,0 +1,38 @@
+﻿version: "3.9"
+services:
+  core-bot:
+    build: ./services/core-bot
+    container_name: core-bot
+    env_file: .env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - brain
+    restart: unless-stopped
+
+  brain:
+    build: ./services/brain
+    container_name: brain
+    env_file: .env
+    ports:
+      - "3010:3010"
+    restart: unless-stopped
+
+  gmail-ingestor:
+    build: ./services/gmail-ingestor
+    container_name: gmail-ingestor
+    env_file: .env
+    restart: unless-stopped
+
+  hr-phone-worker:
+    build: ./services/hr-phone-worker
+    container_name: hr-phone-worker
+    env_file: .env
+    privileged: false
+    restart: unless-stopped
+
+  jobs:
+    build: ./services/jobs
+    container_name: jobs
+    env_file: .env
+    restart: unless-stopped

@@ -1,0 +1,16 @@
+﻿{
+  "name": "mio-automation-public",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "jobs": "node services/jobs/index.js",
+    "brain": "node services/brain/index.js",
+    "start": "npm run jobs"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "express": "^4.19.0",
+    "dotenv": "^16.4.5"
+  }
+}
