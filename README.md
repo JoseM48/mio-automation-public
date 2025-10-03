@@ -83,6 +83,24 @@ Arquitectura modular para automatizar WhatsApp, reservas y HotelRunner.
 
 ---
 
+## 🧠 Notas internas y contexto actualizado (octubre 2025)
+
+- ✅ Estamos trabajando activamente con **Node.js** (ya instalado y configurado).
+- 🟢 El entorno de producción está desplegado en **Render.com**, con variables cargadas desde el panel:
+  - `ACCESS_TOKEN`, `PHONE_NUMBER_ID`, `WABA_ID`, `VERIFY_TOKEN`, etc.
+- 🗃️ Se ha integrado recientemente la base de datos **MongoDB** (llamada internamente “Mango”):
+  - Usada para almacenar trazabilidad, mensajes, sesiones y usuarios.
+- 📬 **WhatsApp Cloud API** está operativa:
+  - Ya se han probado envío y recepción de mensajes correctamente.
+  - Webhook funcional, conectado al servicio `core-bot`.
+- 🤖 **GPT (OpenAI)** ya responde como fallback desde el módulo `brain`.
+- 📦 Flujo de despliegue: GitHub + Render, con ramas separadas para pruebas y producción.
+- ✅ Repositorio actualizado: este mirror refleja solo la parte pública, sin secretos.
+
+> Esta sección puede expandirse o separarse en un archivo `MIRROR_CONTEXT.md` si crece más adelante.
+
+---
+
 ### Archivos útiles
 - **credenciales.txt.txt**  
 - **cert del 3202882608.txt**  
